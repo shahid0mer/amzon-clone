@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Amazon-like Color Palette */
+    --color-amazon-darkblue: #131A22;
+    --color-amazon-darkblue-light: #232F3E;
+    --color-amazon-darkblue-dark: #0F1111;
+    --color-amazon-orange: #F7C653;
+    --color-amazon-yellow: #FFD814;
+    --color-amazon-lightgrey: #E3E6E6;
+  }
+}
+
+
+
+
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+html {
+  overflow-x: hidden;
+}
