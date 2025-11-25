@@ -47,7 +47,9 @@ export const deleteAddress = async (req, res) => {
     const { addressId } = req.params;
     const user = await User.findById(req.user.id);
 
-    user.addresses = user.addresses.filter(a => a._id.toString() !== addressId);
+    user.addresses = user.addresses.filter(
+      (a) => a._id.toString() !== addressId
+    );
     await user.save();
 
     res.json({ message: "Address removed", addresses: user.addresses });
@@ -62,7 +64,7 @@ export const setDefaultAddress = async (req, res) => {
     const { addressId } = req.params;
     const user = await User.findById(req.user.id);
 
-    user.addresses.forEach(addr => {
+    user.addresses.forEach((addr) => {
       addr.isDefault = addr._id.toString() === addressId;
     });
 

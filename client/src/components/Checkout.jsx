@@ -69,9 +69,7 @@ function Checkout() {
       navigate("/order-success", {
         state: {
           orderId:
-            res.payload?._id ||
-            res.payload?.orderId ||
-            `ORD-${Date.now()}`,
+            res.payload?._id || res.payload?.orderId || `ORD-${Date.now()}`,
           items: items.map((i) => ({
             product: {
               title: i.product.title,
@@ -108,57 +106,68 @@ function Checkout() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         <h1 className="text-3xl font-normal mb-8">
-          Checkout (
-          <span className="text-teal-700">{items.length} items</span>)
+          Checkout (<span className="text-teal-700">{items.length} items</span>)
         </h1>
 
         <div className="flex gap-8">
           {/* LEFT COLUMN */}
           <div className="flex-1">
             {/* SHIPPING ADDRESS */}
-             {/* SHIPPING ADDRESS */}
-<div className="mb-8">
-  <div className="flex items-start justify-between mb-4">
-    <div className="flex gap-4">
-      <span className="text-2xl font-bold text-gray-700">1</span>
+            {/* SHIPPING ADDRESS */}
+            <div className="mb-8">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex gap-4">
+                  <span className="text-2xl font-bold text-gray-700">1</span>
 
-      <div>
-        <h2 className="text-lg font-bold mb-2">Shipping address</h2>
+                  <div>
+                    <h2 className="text-lg font-bold mb-2">Shipping address</h2>
 
-        {shippingAddress ? (
-          <div className="text-sm text-gray-700">
-            <p>{shippingAddress.name}</p>
-            <p>{shippingAddress.city}</p>
-            <p>{shippingAddress.state}, {shippingAddress.country}</p>
-          </div>
-        ) : (
-          <p className="text-sm text-gray-500">Loading your address...</p>
-        )}
-      </div>
-    </div>
+                    {addresses.length === 0 ? (
+                      <div className="text-sm text-gray-500">
+                        No address found.
+                        <button
+                          onClick={() => setShowAddressSelector(true)}
+                          className="text-blue-600 hover:underline ml-2"
+                        >
+                          Add Address
+                        </button>
+                      </div>
+                    ) : shippingAddress ? (
+                      <div className="text-sm text-gray-700">
+                        <p>{shippingAddress.name}</p>
+                        <p>{shippingAddress.city}</p>
+                        <p>
+                          {shippingAddress.state}, {shippingAddress.country}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">
+                        Loading your address...
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-    <button
-      className="text-teal-700 text-sm hover:underline hover:text-teal-800"
-      onClick={() => setShowAddressSelector(true)}
-    >
-      Change
-    </button>
-  </div>
-        
+                <button
+                  className="text-teal-700 text-sm hover:underline hover:text-teal-800"
+                  onClick={() => setShowAddressSelector(true)}
+                >
+                  Change
+                </button>
+              </div>
 
-  {/* PUT SELECTOR *INSIDE* THE SECTION */}
-{showAddressSelector && (
-  <div className="mt-4 w-full  p-2">
-    <DeliveryAddressSection
-      onAddressSelect={(addr) => {
-        setShippingAddress(addr);
-        setShowAddressSelector(false);
-      }}
-    />
-  </div>
-)}
-</div>
-
+              {/* PUT SELECTOR *INSIDE* THE SECTION */}
+              {showAddressSelector && (
+                <div className="mt-4 w-full  p-2">
+                  <DeliveryAddressSection
+                    onAddressSelect={(addr) => {
+                      setShippingAddress(addr);
+                      setShowAddressSelector(false);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
 
             <hr className="border-gray-300 mb-8" />
 
@@ -206,12 +215,8 @@ function Checkout() {
                     className="mt-1"
                   />
                   <div>
-                    <p className="font-medium mb-1">
-                      Cash on Delivery (COD)
-                    </p>
-                    <p className="text-xs text-gray-600">
-                      COD not available
-                    </p>
+                    <p className="font-medium mb-1">Cash on Delivery (COD)</p>
+                    <p className="text-xs text-gray-600">COD not available</p>
                   </div>
                 </label>
 

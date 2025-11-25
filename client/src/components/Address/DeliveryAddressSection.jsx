@@ -25,7 +25,7 @@ const DeliveryAddressSection = ({ onAddressSelect }) => {
     city: "",
     state: "",
     pincode: "",
-    country: "India"
+    country: "India",
   });
 
   useEffect(() => {
@@ -33,11 +33,11 @@ const DeliveryAddressSection = ({ onAddressSelect }) => {
   }, [dispatch]);
 
   useEffect(() => {
-  const def = addresses.find(a => a.isDefault);
-  if (def) {
-    setSelected(def._id);  
-  }
-}, [addresses]);
+    const def = addresses.find((a) => a.isDefault);
+    if (def) {
+      setSelected(def._id);
+    }
+  }, [addresses]);
 
   const openAdd = () => {
     setEditing(null);
@@ -49,7 +49,7 @@ const DeliveryAddressSection = ({ onAddressSelect }) => {
       city: "",
       state: "",
       pincode: "",
-      country: "India"
+      country: "India",
     });
     setModalOpen(true);
   };
@@ -69,6 +69,14 @@ const DeliveryAddressSection = ({ onAddressSelect }) => {
     setModalOpen(false);
   };
 
+  if (!addresses) {
+    return (
+      <div className="border border-gray-300 rounded p-4 bg-white shadow-sm">
+        <p>Loading addresses...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="border border-gray-300 rounded p-4 mb-4 bg-white shadow-sm">
       <h2 className="text-lg font-bold mb-3">Select Delivery Address</h2>
@@ -79,38 +87,40 @@ const DeliveryAddressSection = ({ onAddressSelect }) => {
           <p className="text-sm text-gray-500">No saved addresses.</p>
         )}
 
-                    {addresses.map((a) => (
-            <div
-                key={a._id}
-                onClick={() => {
-                setSelected(a._id);
-                onAddressSelect(a);
-                }}
-                className={`p-3 border rounded cursor-pointer hover:bg-gray-50 ${
-                selected === a._id ? "border-blue-500 bg-blue-50" : "border-gray-200"
-                }`}
-            >
-                <div className="flex-1">
-                <p className="font-semibold">{a.name}</p>
-                <p className="text-sm text-gray-700">
-                    {a.addressLine1}, {a.city}, {a.state}, {a.pincode}
-                </p>
-                <p className="text-sm">Phone: {a.phone}</p>
+        {addresses.map((a) => (
+          <div
+            key={a._id}
+            onClick={() => {
+              setSelected(a._id);
+              onAddressSelect(a);
+            }}
+            className={`p-3 border rounded cursor-pointer hover:bg-gray-50 ${
+              selected === a._id
+                ? "border-blue-500 bg-blue-50"
+                : "border-gray-200"
+            }`}
+          >
+            <div className="flex-1">
+              <p className="font-semibold">{a.name}</p>
+              <p className="text-sm text-gray-700">
+                {a.addressLine1}, {a.city}, {a.state}, {a.pincode}
+              </p>
+              <p className="text-sm">Phone: {a.phone}</p>
 
-                <div className="text-xs mt-2 flex gap-4 text-blue-600">
-                    <button onClick={() => openEdit(a)}>Edit</button>
-                    <button onClick={() => dispatch(deleteAddress(a._id))}>
-                    Delete
-                    </button>
-                    {!a.isDefault && (
-                    <button onClick={() => dispatch(setDefaultAddress(a._id))}>
-                        Set Default
-                    </button>
-                    )}
-                </div>
-                </div>
+              <div className="text-xs mt-2 flex gap-4 text-blue-600">
+                <button onClick={() => openEdit(a)}>Edit</button>
+                <button onClick={() => dispatch(deleteAddress(a._id))}>
+                  Delete
+                </button>
+                {!a.isDefault && (
+                  <button onClick={() => dispatch(setDefaultAddress(a._id))}>
+                    Set Default
+                  </button>
+                )}
+              </div>
             </div>
-            ))}
+          </div>
+        ))}
       </div>
 
       <button

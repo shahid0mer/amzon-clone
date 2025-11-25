@@ -6,7 +6,10 @@ export const addReview = async (req, res) => {
     const userId = req.user._id;
 
     const existing = await Review.findOne({ product: productId, user: userId });
-    if (existing) return res.status(400).json({ message: "You already reviewed this product" });
+    if (existing)
+      return res
+        .status(400)
+        .json({ message: "You already reviewed this product" });
 
     const newReview = await Review.create({
       product: productId,
@@ -15,7 +18,7 @@ export const addReview = async (req, res) => {
       title,
       comment,
       images,
-      verified: true 
+      verified: true,
     });
 
     res.status(201).json({ success: true, review: newReview });
@@ -23,7 +26,6 @@ export const addReview = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 export const getProductReviews = async (req, res) => {
   try {

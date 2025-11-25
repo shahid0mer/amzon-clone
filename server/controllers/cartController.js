@@ -1,7 +1,6 @@
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 
-
 export const getCart = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -14,7 +13,6 @@ export const getCart = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch cart", error });
   }
 };
-
 
 export const addToCart = async (req, res) => {
   try {
@@ -29,13 +27,14 @@ export const addToCart = async (req, res) => {
     let cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
-      
       cart = new Cart({
         user: userId,
-        items: [{ product: productId, quantity, price }]
+        items: [{ product: productId, quantity, price }],
       });
     } else {
-      const itemIndex = cart.items.findIndex(i => i.product.toString() === productId);
+      const itemIndex = cart.items.findIndex(
+        (i) => i.product.toString() === productId
+      );
 
       if (itemIndex >= 0) {
         cart.items[itemIndex].quantity += quantity;
@@ -53,7 +52,6 @@ export const addToCart = async (req, res) => {
   }
 };
 
-
 export const removeFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -62,7 +60,7 @@ export const removeFromCart = async (req, res) => {
     const cart = await Cart.findOne({ user: userId });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    cart.items = cart.items.filter(i => i.product.toString() !== productId);
+    cart.items = cart.items.filter((i) => i.product.toString() !== productId);
 
     await cart.save();
     await cart.populate("items.product");
@@ -72,7 +70,6 @@ export const removeFromCart = async (req, res) => {
     res.status(500).json({ message: "Failed to remove item", error });
   }
 };
-
 
 export const updateQuantity = async (req, res) => {
   try {
@@ -85,7 +82,7 @@ export const updateQuantity = async (req, res) => {
     const cart = await Cart.findOne({ user: userId });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    const item = cart.items.find(i => i.product.toString() === productId);
+    const item = cart.items.find((i) => i.product.toString() === productId);
     if (!item) return res.status(404).json({ message: "Item not in cart" });
 
     item.quantity = quantity;

@@ -1,33 +1,38 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { logout } from '../Features/authSlice';
-import { useDispatch } from 'react-redux';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { logout } from "../Features/authSlice";
+import { useDispatch } from "react-redux";
+import { clearCart } from "../Features/cartThunk";
 
 const AccountDropdown = ({ user }) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const dispatch = useDispatch()
- const handleLogout = () => {
-    
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(clearCart());
     dispatch(logout());
-    
+
     setShowDropdown(false);
-    
-    navigate('/');
+
+    navigate("/");
   };
 
   return (
-    <div 
+    <div
       className="relative"
       onMouseEnter={() => setShowDropdown(true)}
       onMouseLeave={() => setShowDropdown(false)}
     >
       {/* Trigger - Your existing account button */}
       <div className="flex flex-col px-2 py-1 border border-transparent hover:border-white cursor-pointer leading-tight">
-        <span className="text-xs">Hello, {user?.name || 'Sign in'}</span>
+        <span className="text-xs">Hello, {user?.name || "Sign in"}</span>
         <div className="flex items-center">
           <span className="font-bold text-sm">Account & Lists</span>
           <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
           </svg>
         </div>
       </div>
@@ -44,8 +49,11 @@ const AccountDropdown = ({ user }) => {
                 </button>
               </Link>
               <p className="text-xs text-center mt-2">
-                New customer?{' '}
-                <Link to="/signup" className="text-blue-600 hover:text-orange-600 hover:underline">
+                New customer?{" "}
+                <Link
+                  to="/signup"
+                  className="text-blue-600 hover:text-orange-600 hover:underline"
+                >
                   Start here.
                 </Link>
               </p>
@@ -54,7 +62,7 @@ const AccountDropdown = ({ user }) => {
 
           {user && (
             <div className="p-4 border-b border-gray-200">
-              <button 
+              <button
                 onClick={handleLogout}
                 className="w-full bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium py-2 rounded text-sm"
               >
@@ -70,27 +78,42 @@ const AccountDropdown = ({ user }) => {
               <h3 className="font-bold text-sm mb-3">Your Lists</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Create a Wish List
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Wish from Any Website
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Baby Wishlist
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Discover Your Style
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Explore Showroom
                   </a>
                 </li>
@@ -102,62 +125,98 @@ const AccountDropdown = ({ user }) => {
               <h3 className="font-bold text-sm mb-3">Your Account</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Your Account
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Your Orders
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Your Wish List
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Keep Shopping
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Your Recommendations
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Your Prime membership
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Your Prime Video
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Your Subscribe & Save Items
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Your Seller Account
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Memberships & Subscriptions
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Manage Your Content and Devices
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-orange-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-orange-600 hover:underline"
+                  >
                     Your Free Amazon Business Account
                   </a>
                 </li>

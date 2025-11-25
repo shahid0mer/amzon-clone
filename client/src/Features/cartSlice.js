@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addToCart, fetchCart, removeFromCart, updateCartQuantity , clearCart} from "./cartThunk";
-
+import {
+  addToCart,
+  fetchCart,
+  removeFromCart,
+  updateCartQuantity,
+  clearCart,
+} from "./cartThunk";
 
 const cartSlice = createSlice({
   name: "cart",
@@ -9,11 +14,18 @@ const cartSlice = createSlice({
     totalAmount: 0,
     loading: false,
   },
-  reducers: {},
-  extraReducers: builder => {
+  reducers: {
+    clearCart: (state) => {
+      state.items = [];
+      state.totalAmount = 0;
+    },
+  },
+  extraReducers: (builder) => {
     builder
       // GET CART
-      .addCase(fetchCart.pending, state => { state.loading = true; })
+      .addCase(fetchCart.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload.items || [];
@@ -39,11 +51,11 @@ const cartSlice = createSlice({
       })
 
       // CLEAR CART
-      .addCase(clearCart.fulfilled, state => {
+      .addCase(clearCart.fulfilled, (state) => {
         state.items = [];
         state.totalAmount = 0;
       });
-  }
+  },
 });
 
 export default cartSlice.reducer;

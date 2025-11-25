@@ -1,20 +1,14 @@
-import React, { useState } from 'react';
-import { Search, MapPin, ShoppingCart, Menu } from 'lucide-react';
-import AmazonwhiteLogo from '../assets/Amazonwhite.svg'
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import AccountDropdown from './AccountDropdown';
+import React, { useState } from "react";
+import { Search, MapPin, ShoppingCart, Menu } from "lucide-react";
+import AmazonwhiteLogo from "../assets/Amazonwhite.svg";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import AccountDropdown from "./AccountDropdown";
 
 const AmazonNavbar = () => {
-  const [searchCategory, setSearchCategory] = useState('All');
+  const [searchCategory, setSearchCategory] = useState("All");
   const user = useSelector((state) => state.auth.user);
   const cartCount = useSelector((state) => state.cart.items.length);
-console.log(cartCount);
-
-  
-
-  console.log("USER FROM REDUX:", user);
-
 
   return (
     <div>
@@ -24,16 +18,23 @@ console.log(cartCount);
         <div className="flex items-center px-5 py-2 gap-5 ">
           {/* Logo */}
           <Link to={"/"}>
-          <div className="flex items-center ">
-           <img className='w-24 h-8 ' src={AmazonwhiteLogo} alt="" srcset="" />
-          </div>
+            <div className="flex items-center ">
+              <img
+                className="w-24 h-8 "
+                src={AmazonwhiteLogo}
+                alt=""
+                srcset=""
+              />
+            </div>
           </Link>
 
           {/* Delivery Location */}
           <div className="flex items-center px-2 py-1 border border-transparent hover:border-white cursor-pointer ml-2">
             <MapPin className="w-5 h-5 mr-1" />
             <div className="flex flex-col text-xs leading-tight">
-              <span className="text-gray-300 text-[11px]">Delivering to Bhubaneswar 751001</span>
+              <span className="text-gray-300 text-[11px]">
+                Delivering to Bhubaneswar 751001
+              </span>
               <span className="font-bold text-sm">Update location</span>
             </div>
           </div>
@@ -81,13 +82,21 @@ console.log(cartCount);
               className="w-6 h-4 mr-1"
             />
             <span className="font-bold text-sm">EN</span>
-            <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            <svg
+              className="w-3 h-3 ml-1"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
 
           {/* Account & Lists */}
-    <AccountDropdown user={user}/> 
+          <AccountDropdown user={user} />
 
           {/* <div className="flex flex-col px-2 py-1 border border-transparent hover:border-white cursor-pointer leading-tight">
             <span className="text-xs">Hello, {user?.name}</span>
@@ -101,25 +110,25 @@ console.log(cartCount);
 
           {/* Returns & Orders */}
           <Link to={"/orders"}>
-          <div className="flex flex-col px-2 py-1 border border-transparent hover:border-white cursor-pointer leading-tight">
-            <span className="text-xs">Returns</span>
-            <span className="font-bold text-sm">& Orders</span>
-          </div>
+            <div className="flex flex-col px-2 py-1 border border-transparent hover:border-white cursor-pointer leading-tight">
+              <span className="text-xs">Returns</span>
+              <span className="font-bold text-sm">& Orders</span>
+            </div>
           </Link>
 
           {/* Cart */}
           <Link to={"/cart"}>
-          <div className="flex items-center px-2 py-1 border border-transparent hover:border-white cursor-pointer relative">           
-            <div className="relative">
-              <ShoppingCart className="w-8 h-8" strokeWidth={1.5} />
-              <span className="absolute -top-1 left-4 bg-[#f08804] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                {cartCount}
-              </span>
-            </div>           
-            <span className="font-bold text-sm ml-1">Cart</span>           
-          </div>
+            <div className="flex items-center px-2 py-1 border border-transparent hover:border-white cursor-pointer relative">
+              <div className="relative">
+                <ShoppingCart className="w-8 h-8" strokeWidth={1.5} />
+                <span className="absolute -top-1 left-4 bg-[#f08804] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              </div>
+              <span className="font-bold text-sm ml-1">Cart</span>
+            </div>
           </Link>
-        </div>  
+        </div>
       </header>
     </div>
   );

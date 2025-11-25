@@ -10,7 +10,6 @@ export const handleGoogleCallback = async (req, res) => {
     const code = req.query.code;
     if (!code) return res.status(400).send("Missing code");
 
-    
     const tokenResp = await axios.post(
       "https://oauth2.googleapis.com/token",
       new URLSearchParams({
@@ -25,7 +24,6 @@ export const handleGoogleCallback = async (req, res) => {
 
     const { id_token } = tokenResp.data;
 
-   
     const ticket = await client.verifyIdToken({
       idToken: id_token,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -47,14 +45,12 @@ export const handleGoogleCallback = async (req, res) => {
         picture: payload.picture,
       });
     } else if (!user.googleId) {
-      
       user.googleId = payload.sub;
       user.authProvider = "google";
       user.isVerified = payload.email_verified ?? user.isVerified;
       await user.save();
     }
 
-    
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
@@ -63,7 +59,7 @@ export const handleGoogleCallback = async (req, res) => {
 
     const isNewGoogleUser = !user.password;
 
-   res.send(`
+    res.send(`
       <script>
         window.opener.postMessage(
           {
@@ -81,7 +77,6 @@ export const handleGoogleCallback = async (req, res) => {
         window.close();
       </script>
     `);
-
   } catch (err) {
     console.error(err);
     res.send(`
@@ -96,35 +91,33 @@ export const handleGoogleCallback = async (req, res) => {
   }
 };
 
-export const setPassword  = async (req, res) => {
+export const setPassword = async (req, res) => {
   try {
-    const { token, newPassword } = req.body
+    const { token, newPassword } = req.body;
     if (!token || !newPassword) {
-      return res.status(400).json({ message: "Missing token or password" })
+      return res.status(400).json({ message: "Missing token or password" });
     }
 
-    
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
-    if (!user) return res.status(404).json({ message: "User not found" })
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    
     if (user.password) {
-      return res.status(400).json({ message: "Password already set" })
+      return res.status(400).json({ message: "Password already set" });
     }
 
-    user.password = newPassword;   
-    user.authProvider = "local";   
+    user.password = newPassword;
+    user.authProvider = "local";
     await user.save();
 
-    res.json({ message: "Password set successfully! Login available via email/password." })
-
+    res.json({
+      message: "Password set successfully! Login available via email/password.",
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    res.status(500).json({ error: err.message });
   }
 };
-
 
 export const loginUser = async (req, res) => {
   try {
@@ -141,12 +134,11 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    // Compare password
     const isMatch = await user.comparePassword(password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid email or password" });
 
-     const token = jwt.sign(
+    const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
@@ -161,23 +153,19 @@ export const loginUser = async (req, res) => {
   }
 };
 
-
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Check existing email
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
     const generateToken = (user) => {
-     return jwt.sign(
-    { id: user._id }, 
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }
-  );
-};
+      return jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+    };
 
     // Create user
     const newUser = await User.create({
@@ -185,7 +173,7 @@ export const registerUser = async (req, res) => {
       email,
       password,
       authProvider: "local",
-      isVerified: false, // can switch later if using OTP
+      isVerified: false,
     });
 
     const token = generateToken(newUser);
