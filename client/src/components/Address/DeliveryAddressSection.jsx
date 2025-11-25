@@ -69,14 +69,6 @@ const DeliveryAddressSection = ({ onAddressSelect }) => {
     setModalOpen(false);
   };
 
-  if (!addresses) {
-    return (
-      <div className="border border-gray-300 rounded p-4 bg-white shadow-sm">
-        <p>Loading addresses...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="border border-gray-300 rounded p-4 mb-4 bg-white shadow-sm">
       <h2 className="text-lg font-bold mb-3">Select Delivery Address</h2>

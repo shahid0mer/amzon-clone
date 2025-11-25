@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "../services/axiosClient"
+import axios from "../services/axiosClient";
 
 export const addReview = createAsyncThunk(
   "reviews/addReview",
@@ -18,12 +18,10 @@ export const getReviews = createAsyncThunk(
   async (productId, { rejectWithValue }) => {
     try {
       const res = await axios.get(`/reviews/${productId}`);
-      console.log(res.data);
-      
+
       return res.data.reviews;
     } catch (err) {
       return rejectWithValue(err.response.data.message);
     }
   }
 );
-

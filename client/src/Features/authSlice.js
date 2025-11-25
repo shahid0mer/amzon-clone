@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, loginWithGoogle, setPasswordThunk, registerUser } from "./authThunk";
+import {
+  loginUser,
+  loginWithGoogle,
+  setPasswordThunk,
+  registerUser,
+} from "./authThunk";
 
 const initialState = {
   user: null,
@@ -33,8 +38,6 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(loginWithGoogle.fulfilled, (state, action) => {
-        console.log('Google login payload:', action.payload);
-        console.log('User object:', action.payload.user);
         const user = action.payload.user;
         state.user = user;
         state.token = action.payload.token;
@@ -45,13 +48,13 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;   
-        state.token = action.payload.token; 
+        state.user = action.payload.user;
+        state.token = action.payload.token;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
+      });
   },
 });
 

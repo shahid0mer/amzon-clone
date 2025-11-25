@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-
 export default function OauthTest() {
-
   const [profile, setProfile] = useState(null);
   const BACKEND_URL = "http://localhost:5000";
 
@@ -14,12 +12,11 @@ export default function OauthTest() {
 
     if (token) {
       localStorage.setItem("token", token);
-      console.log("Token Saved:", token);
 
       // Remove token from URL
       window.history.replaceState({}, "", "/google-auth-test");
 
-        toast.success("Successfully logged in!");
+      toast.success("Successfully logged in!");
     }
   }, []);
 
