@@ -15,36 +15,39 @@ import Orders from "./components/Orders";
 import NotFound from "./components/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Toaster } from "sonner";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
   return (
     <>
       <Toaster richColors position="top-center" />
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route
-            path="/products/category/:categoryName"
-            element={<ProductsPage />}
-          />
-          <Route path="/product/:id" element={<ProductDetailsPage />} />
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route
+              path="/products/category/:categoryName"
+              element={<ProductsPage />}
+            />
+            <Route path="/product/:id" element={<ProductDetailsPage />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-success" element={<OrderSuccessPage />} />
-            <Route path="/orders" element={<Orders />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-success" element={<OrderSuccessPage />} />
+              <Route path="/orders" element={<Orders />} />
+            </Route>
           </Route>
-        </Route>
 
-        {/* Auth Routes (No header/footer) */}
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<CreateAccount />} />
-        <Route path="/create-password" element={<SetPassword />} />
+          {/* Auth Routes*/}
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<CreateAccount />} />
+          <Route path="/create-password" element={<SetPassword />} />
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </GoogleOAuthProvider>
     </>
   );
 }

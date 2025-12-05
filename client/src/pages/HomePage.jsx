@@ -13,7 +13,6 @@ const HomePage = () => {
   const { products } = useSelector((state) => state.products);
 
   useEffect(() => {
-    // Fetch more products for homepage (e.g., 100 products)
     dispatch(fetchAllProducts({ page: 1, limit: 1000 }));
   }, [dispatch]);
 

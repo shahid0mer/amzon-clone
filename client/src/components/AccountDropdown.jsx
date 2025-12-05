@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { use, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../Features/authSlice";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../Features/cartThunk";
@@ -7,6 +7,7 @@ import { clearCart } from "../Features/cartThunk";
 const AccountDropdown = ({ user }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLogout = () => {
     dispatch(clearCart());
     dispatch(logout());

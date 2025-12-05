@@ -5,89 +5,72 @@ import User from "../models/User.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-export const handleGoogleCallback = async (req, res) => {
+export const handleGoogleAuth = async (req, res) => {
   try {
-    const code = req.query.code;
-    if (!code) return res.status(400).send("Missing code");
+    const { access_token } = req.body;
 
-    const tokenResp = await axios.post(
-      "https://oauth2.googleapis.com/token",
-      new URLSearchParams({
-        code,
-        client_id: process.env.GOOGLE_CLIENT_ID,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: process.env.REDIRECT_URI,
-        grant_type: "authorization_code",
-      }).toString(),
-      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+    if (!access_token) {
+      return res.status(400).json({ error: "Missing access token" });
+    }
+
+    // Get user info from Google using the access token
+    const userInfoResponse = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
     );
 
-    const { id_token } = tokenResp.data;
+    const { sub, email, name, picture, email_verified } = userInfoResponse.data;
 
-    const ticket = await client.verifyIdToken({
-      idToken: id_token,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
+    if (!email) {
+      return res.status(400).json({ error: "Unable to get email from Google" });
+    }
 
-    const payload = ticket.getPayload();
-    if (!payload || !payload.email)
-      return res.status(400).send("Unable to verify Google token");
-
-    let user = await User.findOne({ email: payload.email });
+    // Find or create user
+    let user = await User.findOne({ email });
 
     if (!user) {
       user = await User.create({
-        name: payload.name,
-        email: payload.email,
-        googleId: payload.sub,
+        name,
+        email,
+        googleId: sub,
         authProvider: "google",
-        isVerified: payload.email_verified ?? true,
-        picture: payload.picture,
+        isVerified: email_verified ?? true,
+        picture,
       });
     } else if (!user.googleId) {
-      user.googleId = payload.sub;
+      user.googleId = sub;
       user.authProvider = "google";
-      user.isVerified = payload.email_verified ?? user.isVerified;
+      user.isVerified = email_verified ?? user.isVerified;
+      if (picture) user.picture = picture;
       await user.save();
     }
 
+    // Generate JWT token
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    const isNewGoogleUser = !user.password;
+    const isNewUser = !user.password;
 
-    res.send(`
-      <script>
-        window.opener.postMessage(
-          {
-            token: "${token}",
-            isNewUser: ${isNewGoogleUser},
-            user: {
-              id: "${user._id}",
-              name: "${user.name}",
-              email: "${user.email}",
-              
-            }
-          },
-          "${process.env.FRONTEND_URL}"
-        );
-        window.close();
-      </script>
-    `);
+    res.json({
+      token,
+      isNewUser,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+      },
+    });
   } catch (err) {
-    console.error(err);
-    res.send(`
-      <script>
-        window.opener.postMessage(
-          { error: "Google authentication failed" },
-          "${process.env.FRONTEND_URL}"
-        );
-        window.close();
-      </script>
-    `);
+    console.error("Google auth error:", err);
+    res.status(500).json({ error: "Google authentication failed" });
   }
 };
 

@@ -4,6 +4,8 @@ import inimg from "../assets/in.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginWithGoogle, registerUser } from "../Features/authThunk";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 const CreateAccount = () => {
   const dispatch = useDispatch();
@@ -30,73 +32,38 @@ const CreateAccount = () => {
     if (user) navigate("/");
   }, [user, navigate]);
 
-  const handleGoogleLogin = async () => {
-    try {
-      // Define listener separately so you can remove it properly
-      const handleMessage = async (event) => {
-        // IMPORTANT: Check origin matches your backend URL
-        const backendUrl = new URL(import.meta.env.VITE_API_URL);
-        if (event.origin !== backendUrl.origin) {
-          console.log("Message from wrong origin:", event.origin);
-          return;
-        }
-
-        console.log("Received message:", event.data);
-
-        const { token, isNewUser, user, error } = event.data;
-
-        if (error) {
-          toast.error(error);
-          window.removeEventListener("message", handleMessage);
-          return;
-        }
-
-        if (!token) {
-          toast.error("No token received from Google login");
-          window.removeEventListener("message", handleMessage);
-          return;
-        }
-
-        try {
-          // Save token to Redux - pass as object!
-          await dispatch(loginWithGoogle({ token, isNewUser, user })).unwrap();
-
-          // Clean up listener
-          window.removeEventListener("message", handleMessage);
-
-          // Navigate based on whether user needs to set password
-          if (isNewUser) {
-            navigate("/create-password");
-          } else {
-            navigate("/");
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        // Send the access token to your backend
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/google`,
+          {
+            access_token: tokenResponse.access_token,
           }
-        } catch (err) {
-          console.error("Redux error:", err);
-          toast.error(err.message || "Failed to process Google login");
-          window.removeEventListener("message", handleMessage);
+        );
+
+        const { token, isNewUser, user } = response.data;
+
+        // Save token to Redux
+        await dispatch(loginWithGoogle({ token, isNewUser, user })).unwrap();
+
+        // Navigate based on whether user needs to set password
+        if (isNewUser) {
+          navigate("/create-password");
+        } else {
+          navigate("/");
         }
-      };
-
-      // Add listener BEFORE opening popup
-      window.addEventListener("message", handleMessage);
-
-      // Open popup AFTER listener is active
-      const popup = window.open(
-        `${import.meta.env.VITE_API_URL}/auth/google`,
-        "_blank",
-        "width=500,height=600"
-      );
-
-      // Optional: Check if popup was blocked
-      if (!popup) {
-        toast.warning("Popup was blocked. Please allow popups for this site.");
-        window.removeEventListener("message", handleMessage);
+      } catch (err) {
+        console.error("Google login error:", err);
+        // Handle error - you might want to show a toast here
       }
-    } catch (err) {
-      console.error("Google login error:", err);
-      toast.error("Google login failed");
-    }
-  };
+    },
+    onError: (error) => {
+      console.error("Google login failed:", error);
+      // Handle error - you might want to show a toast here
+    },
+  });
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center pt-8 sm:pt-16">
@@ -204,7 +171,7 @@ const CreateAccount = () => {
 
         <button
           className="w-full py-1.5 bg-white hover:bg-gray-50 text-sm border border-gray-400 rounded-sm flex items-center justify-center space-x-2"
-          onClick={handleGoogleLogin}
+          onClick={() => googleLogin()}
         >
           {/* Google Icon */}
           <svg
