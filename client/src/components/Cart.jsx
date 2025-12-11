@@ -17,10 +17,10 @@ function Cart() {
   const navigate = useNavigate();
   const { items, totalAmount } = useSelector((state) => state.cart);
   const { products } = useSelector((state) => state.products);
-  const { user } = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
+
 
   useEffect(() => {
-    dispatch({ type: "cart/clearCart" });
 
     if (user) {
       dispatch(fetchCart());
