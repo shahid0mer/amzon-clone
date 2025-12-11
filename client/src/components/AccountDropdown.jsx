@@ -8,12 +8,17 @@ const AccountDropdown = ({ user }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleLogout = () => {
-    dispatch(clearCart());
+const handleLogout = () => {
+    
+    dispatch({ type: "cart/clearCart" });
+    
+    // this clears user and token
     dispatch(logout());
-
+    
+    
     setShowDropdown(false);
-
+    
+    
     navigate("/");
   };
 
