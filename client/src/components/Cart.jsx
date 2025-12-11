@@ -17,15 +17,15 @@ function Cart() {
   const navigate = useNavigate();
   const { items, totalAmount } = useSelector((state) => state.cart);
   const { products } = useSelector((state) => state.products);
-  const user = useSelector((state) => state.auth.user);
-
+  const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-
-    if (user) {
+    if (token) {
       dispatch(fetchCart());
+    } else {
+      dispatch({ type: "cart/clearCart" });
     }
-  }, [user, dispatch]);
+  }, [token, dispatch]);
 
   const handleQtyChange = (e, productId) => {
     dispatch(
